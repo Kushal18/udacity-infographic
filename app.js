@@ -54,47 +54,14 @@ function randomizeFact(dino, human) {
   }
 }
 
-/*
-async function generateTile(Array, humanObj) {
-  try {
-    fetch("dino.json")
-    .then((response) => response.json())
-    .then((data) => {
-       dinosaurs = Array.forEach((dino) => {
-          const div = document.createElement("div");
-          div.classList.add("grid-item");
-          const img = document.createElement("img");
-          img.setAttribute("src", `./images/${dino.species.toLowerCase()}.png`);
-          const p = document.createElement("p");
-          const dinoObj = new Dinasaur(
-            dino.species,
-            dino.weight,
-            dino.height,
-            dino.diet,
-            dino.fact
-          );
-          p.innerHTML = randomizeFact(dinoObj, humanObj);
-          div.appendChild(img);
-          div.appendChild(p);
-          grid.appendChild(div);
-       });
-    });
-  } catch(error) {
-    console.log(error);
-  }
-}; */
-
 // Generate Tiles for each Dino in Array
 function generateTile(Array, humanObj) {
   Array.forEach((dino) => {
-    // const tile = "something";
-    console.log("generating tile for " + dino.species.toLowerCase());
     const div = document.createElement("div");
     div.classList.add("grid-item");
     const img = document.createElement("img");
     img.setAttribute("src", `./images/${dino.species.toLowerCase()}.png`);
     const p = document.createElement("p");
-    // p.innerHTML = dino.fact;
     const dinoObj = new Dinasaur(
       dino.species,
       dino.weight,
@@ -140,25 +107,25 @@ async function fetchDino(humanObj) {
 }
 
 // On button click, prepare and display infographic
-document.getElementById("btn").onclick = () => {
-  const humanObj = (function getData() {
-    const name = document.querySelector("#name").value;
-    const feet = document.querySelector("#feet").value;
-    const inches = document.querySelector("#inches").value;
-    const weight = document.querySelector("#weight").value;
-    const diet = document.querySelector("#diet").value;
-    // '+' converts string into integer
-    const height = +feet * 12 + +inches;
-
-    return new Human(name, weight, height, diet);
-  })();
-  createHumanTile(humanObj);
-  fetchDino(humanObj);
-  // Hide Form, Show Grid and new comparison button
-  form.classList.add("display_none");
-  toggleBtn.classList.remove("display_none");
-  grid.classList.remove("display_none");
-};
+button.addEventListener("click", () => {	
+  // Use IIFE to get human data from form	
+  const humanObj = (function getData() {	
+    const name = document.querySelector("#name").value;	
+    const feet = document.querySelector("#feet").value;	
+    const inches = document.querySelector("#inches").value;	
+    const weight = document.querySelector("#weight").value;	
+    const diet = document.querySelector("#diet").value;	
+    // '+' converts string into integer	
+    const height = +feet * 12 + +inches;	
+    return new Human(name, weight, height, diet);	
+  })();	
+  createHumanTile(humanObj);	
+  fetchDino(humanObj);	
+  // Hide Form, Show Grid and new comparison button	
+  form.classList.add("display_none");	
+  toggleBtn.classList.remove("display_none");	
+  grid.classList.remove("display_none");	
+});
 
 toggleBtn.addEventListener("click", () => {
   form.classList.toggle("display_none");
