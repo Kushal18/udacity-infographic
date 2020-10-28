@@ -54,27 +54,34 @@ function randomizeFact(dino, human) {
   }
 }
 
-// Generate Tiles for each Dino in Array
-function generateTile(Array, humanObj) {
-  Array.forEach((dino) => {
-    const div = document.createElement("div");
-    div.classList.add("grid-item");
-    const img = document.createElement("img");
-    img.setAttribute("src", `./images/${dino.species.toLowerCase()}.png`);
-    const p = document.createElement("p");
-    const dinoObj = new Dinasaur(
-      dino.species,
-      dino.weight,
-      dino.height,
-      dino.diet,
-      dino.fact
-    );
-    p.innerHTML = randomizeFact(dinoObj, humanObj);
-    div.appendChild(img);
-    div.appendChild(p);
-    grid.appendChild(div);
-  });
-}
+async function generateTile(humanObj) {
+  try {
+    await fetch("dino.json")
+      .then((response) => response.json())
+      .then((data) => {
+        data.Dinos.map((dino) => {
+          const div = document.createElement("div");
+          div.classList.add("grid-item");
+          const img = document.createElement("img");
+          img.setAttribute("src", `./images/${dino.species.toLowerCase()}.png`);
+          const p = document.createElement("p");
+          const dinoObj = new Dinasaur(
+            dino.species,
+            dino.weight,
+            dino.height,
+            dino.diet,
+            dino.fact
+          );
+          p.innerHTML = randomizeFact(dinoObj, humanObj);
+          div.appendChild(img);
+          div.appendChild(p);
+          grid.appendChild(div);
+        });
+      });
+    } catch(error) {
+      console.log(error);
+  }
+};
 
 // Remove form from screen
 function removeForm() {
@@ -93,17 +100,10 @@ function createHumanTile(obj) {
   grid.appendChild(div);
 }
 
-async function fetchDino(humanObj) {
-  try {
-    fetch("./dino.json")
-      .then((res) => res.json())
-      .then((data) => {
-        // Passing in array of Dino data into generateTile function
-        generateTile(data.Dinos, humanObj);
-      });
-  } catch (error) {
-    console.log(error);
-  }
+function removeForm() {
+  form.classList.add("display_none");	
+  toggleBtn.classList.remove("display_none");	
+  grid.classList.remove("display_none");	
 }
 
 // On button click, prepare and display infographic
@@ -115,16 +115,12 @@ button.addEventListener("click", () => {
     const inches = document.querySelector("#inches").value;	
     const weight = document.querySelector("#weight").value;	
     const diet = document.querySelector("#diet").value;	
-    // '+' converts string into integer	
     const height = +feet * 12 + +inches;	
     return new Human(name, weight, height, diet);	
-  })();	
+  })();
   createHumanTile(humanObj);	
-  fetchDino(humanObj);	
-  // Hide Form, Show Grid and new comparison button	
-  form.classList.add("display_none");	
-  toggleBtn.classList.remove("display_none");	
-  grid.classList.remove("display_none");	
+  generateTile(humanObj);	
+  removeForm();
 });
 
 toggleBtn.addEventListener("click", () => {
